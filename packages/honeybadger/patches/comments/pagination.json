@@ -1,0 +1,15 @@
+{
+  "description": "Mark the comments list as paginated. The spec documents the `links` this list returns (its `TimeSeriesLinks` schema) but marks no operation as paginated, so it was a single-page call. listComments (GET /projects/{project_id}/faults/{fault_id}/comments) pages from newest to oldest: `links.older` is the next page (`?before=...&limit=M`), null when nothing older exists. The trait names that link (outputToken) and the query parameter that holds the position (inputToken); paginateHoneybadger in src/pagination.ts copies that parameter from the link into the next request. A time-ordered request with only `after` asks for what is newer, and its `links.older` would lead back past that point, so paginateHoneybadger follows `links.newer` (`?after=...&limit=M`, null when nothing newer exists) instead. Source: the published spec, https://docs.honeybadger.io/api/v3/openapi.json.",
+  "patches": [
+    {
+      "op": "add",
+      "path": "/shapes/com.honeybadger.comments#ListComments/traits/smithy.api#paginated",
+      "value": {
+        "inputToken": "before",
+        "outputToken": "links.older",
+        "items": "data",
+        "pageSize": "limit"
+      }
+    }
+  ]
+}

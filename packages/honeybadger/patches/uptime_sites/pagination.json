@@ -1,0 +1,35 @@
+{
+  "description": "Mark the three uptime_sites lists as paginated. The spec documents the `links` these lists return (its `OffsetLinks` and `TimeSeriesLinks` schemas) but marks no operation as paginated, so each was a single-page call. listSites (GET /projects/{project_id}/sites) pages by number: `links.next` is the next page (`?page=N&per_page=M`), null on the last page. listUptimeChecks (GET /projects/{project_id}/sites/{site_id}/checks) pages from newest to oldest: `links.older` is the next page (`?created_before=...&limit=M`), null when nothing older exists. listOutages (GET /projects/{project_id}/sites/{site_id}/outages) pages from newest to oldest: `links.older` is the next page (`?created_before=...&limit=M`), null when nothing older exists. The trait names that link (outputToken) and the query parameter that holds the position (inputToken); paginateHoneybadger in src/pagination.ts copies that parameter from the link into the next request. A time-ordered request with only `created_after` asks for what is newer, and its `links.older` would lead back past that point, so paginateHoneybadger follows `links.newer` (`?created_after=...&limit=M`, null when nothing newer exists) instead. Source: the published spec, https://docs.honeybadger.io/api/v3/openapi.json. Checked live on 2026-11-18: listSites returned 30 sites over 15 pages of two, and listUptimeChecks returned 4,833 checks over 49 pages of 100 through `links.older`, whose `created_before` is fractional Unix seconds such as 1794971106.5638819. Checked live on 2026-11-20: listUptimeChecks with `created_after` from the middle of 4,929 checks followed `links.newer` to null, and every check returned was newer than the starting point.",
+  "patches": [
+    {
+      "op": "add",
+      "path": "/shapes/com.honeybadger.uptime_sites#ListSites/traits/smithy.api#paginated",
+      "value": {
+        "inputToken": "page",
+        "outputToken": "links.next",
+        "items": "data",
+        "pageSize": "per_page"
+      }
+    },
+    {
+      "op": "add",
+      "path": "/shapes/com.honeybadger.uptime_sites#ListUptimeChecks/traits/smithy.api#paginated",
+      "value": {
+        "inputToken": "created_before",
+        "outputToken": "links.older",
+        "items": "data",
+        "pageSize": "limit"
+      }
+    },
+    {
+      "op": "add",
+      "path": "/shapes/com.honeybadger.uptime_sites#ListOutages/traits/smithy.api#paginated",
+      "value": {
+        "inputToken": "created_before",
+        "outputToken": "links.older",
+        "items": "data",
+        "pageSize": "limit"
+      }
+    }
+  ]
+}

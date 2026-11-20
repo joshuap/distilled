@@ -608,3 +608,8 @@ shallow = true
 	url = https://github.com/distilled-mirror/spec-mirror-browserbase.git
 	ignore = dirty
 	shallow = true
+[submodule "packages/honeybadger/specs/spec-mirror-honeybadger"]
+	path = packages/honeybadger/specs/spec-mirror-honeybadger
+	url = https://github.com/distilled-mirror/spec-mirror-honeybadger.git
+	ignore = dirty
+	shallow = true

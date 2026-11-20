@@ -88,6 +88,7 @@ export const SPEC_REPOS: readonly SpecRepo[] = [
   { package: "growthbook" },
   { package: "gusto" },
   { package: "hetzner" },
+  { package: "honeybadger" },
   { package: "hostinger" },
   { package: "huggingface" },
   { package: "hydradb" },

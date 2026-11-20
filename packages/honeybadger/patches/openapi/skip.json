@@ -1,0 +1,30 @@
+{
+  "description": "Remove getOpenapiJson and getOpenapiYaml (GET /openapi.json and GET /openapi.yaml), the only operations under the spec's OpenAPI tag. getOpenapiYaml is typed wrong: the spec says it answers `application/yaml` with an `object` schema, so it was generated as a call whose output is an empty structure; the REST protocol returns the YAML text under that type in lenient mode and fails with HoneybadgerParseError when response validation is on. getOpenapiJson works, but it returns the API description itself rather than any account data, and the same document is published at the URL below; keeping it alone would leave a one-operation `openapi` module. Source: the published spec, https://docs.honeybadger.io/api/v3/openapi.json.",
+  "patches": [
+    {
+      "op": "test",
+      "path": "/shapes/com.honeybadger.openapi#HoneybadgerOpenapi/operations",
+      "value": [
+        {
+          "target": "com.honeybadger.openapi#GetOpenapiJson"
+        },
+        {
+          "target": "com.honeybadger.openapi#GetOpenapiYaml"
+        }
+      ]
+    },
+    {
+      "op": "replace",
+      "path": "/shapes/com.honeybadger.openapi#HoneybadgerOpenapi/operations",
+      "value": []
+    },
+    {
+      "op": "remove",
+      "path": "/shapes/com.honeybadger.openapi#GetOpenapiJson"
+    },
+    {
+      "op": "remove",
+      "path": "/shapes/com.honeybadger.openapi#GetOpenapiYaml"
+    }
+  ]
+}

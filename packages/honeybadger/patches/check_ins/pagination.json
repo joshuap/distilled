@@ -1,0 +1,25 @@
+{
+  "description": "Mark the two check_ins lists as paginated. The spec documents the `links` these lists return (its `OffsetLinks` and `TimeSeriesLinks` schemas) but marks no operation as paginated, so each was a single-page call. listCheckIns (GET /projects/{project_id}/check_ins) pages by number: `links.next` is the next page (`?page=N&per_page=M`), null on the last page. listCheckInEvents (GET /projects/{project_id}/check_ins/{check_in_id}/events) pages from newest to oldest: `links.older` is the next page (`?created_before=...&limit=M`), null when nothing older exists. The trait names that link (outputToken) and the query parameter that holds the position (inputToken); paginateHoneybadger in src/pagination.ts copies that parameter from the link into the next request. Source: the published spec, https://docs.honeybadger.io/api/v3/openapi.json.",
+  "patches": [
+    {
+      "op": "add",
+      "path": "/shapes/com.honeybadger.check_ins#ListCheckIns/traits/smithy.api#paginated",
+      "value": {
+        "inputToken": "page",
+        "outputToken": "links.next",
+        "items": "data",
+        "pageSize": "per_page"
+      }
+    },
+    {
+      "op": "add",
+      "path": "/shapes/com.honeybadger.check_ins#ListCheckInEvents/traits/smithy.api#paginated",
+      "value": {
+        "inputToken": "created_before",
+        "outputToken": "links.older",
+        "items": "data",
+        "pageSize": "limit"
+      }
+    }
+  ]
+}

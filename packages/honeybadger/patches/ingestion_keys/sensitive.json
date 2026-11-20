@@ -1,0 +1,10 @@
+{
+  "description": "Mark the ingestion key's value sensitive. IngestionKey.key is the credential a Honeybadger notifier sends to report errors and events for the project (example `hbp_...`). The spec says: \"The Ingestion Key value a notifier sends. Returned in full: unlike an API Token, it's meant to ship with your application.\" It is not secret in the way an API token is, but anyone holding it can report errors and events to the project, so this SDK keeps it out of logs and error output. The spec types it a plain string and its name matches none of convert's sensitive patterns, so it was generated as `string`; with the mark, createIngestionKey, getIngestionKey, updateIngestionKey and listIngestionKeys deliver it as Redacted. Source: the published spec, https://docs.honeybadger.io/api/v3/openapi.json. Checked live on 2026-11-18: createIngestionKey and listIngestionKeys returned each key (40 characters) as Redacted.",
+  "patches": [
+    {
+      "op": "add",
+      "path": "/shapes/com.honeybadger.ingestion_keys#IngestionKey/members/key/traits/smithy.api#sensitive",
+      "value": {}
+    }
+  ]
+}

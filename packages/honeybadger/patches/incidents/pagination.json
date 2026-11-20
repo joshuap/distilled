@@ -1,0 +1,25 @@
+{
+  "description": "Mark the two incidents lists as paginated. The spec documents the `links` these lists return (its `TimeSeriesLinks` schema) but marks no operation as paginated, so each was a single-page call. listStatusPageIncidents (GET /status_pages/{status_page_id}/incidents) pages from newest to oldest: `links.older` is the next page (`?before=...&limit=M`), null when nothing older exists. listIncidentUpdates (GET /status_pages/{status_page_id}/incidents/{incident_id}/updates) pages from newest to oldest: `links.older` is the next page (`?before=...&limit=M`), null when nothing older exists. The trait names that link (outputToken) and the query parameter that holds the position (inputToken); paginateHoneybadger in src/pagination.ts copies that parameter from the link into the next request. A time-ordered request with only `after` asks for what is newer, and its `links.older` would lead back past that point, so paginateHoneybadger follows `links.newer` (`?after=...&limit=M`, null when nothing newer exists) instead. Source: the published spec, https://docs.honeybadger.io/api/v3/openapi.json.",
+  "patches": [
+    {
+      "op": "add",
+      "path": "/shapes/com.honeybadger.incidents#ListStatusPageIncidents/traits/smithy.api#paginated",
+      "value": {
+        "inputToken": "before",
+        "outputToken": "links.older",
+        "items": "data",
+        "pageSize": "limit"
+      }
+    },
+    {
+      "op": "add",
+      "path": "/shapes/com.honeybadger.incidents#ListIncidentUpdates/traits/smithy.api#paginated",
+      "value": {
+        "inputToken": "before",
+        "outputToken": "links.older",
+        "items": "data",
+        "pageSize": "limit"
+      }
+    }
+  ]
+}

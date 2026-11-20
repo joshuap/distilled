@@ -1,0 +1,15 @@
+{
+  "description": "Mark the faults list as paginated. The spec documents the `links` this list returns (its `OffsetLinks` schema) but marks no operation as paginated, so it was a single-page call. listFaults (GET /projects/{project_id}/faults) pages by number: `links.next` is the next page (`?page=N&per_page=M`), null on the last page. The trait names that link (outputToken) and the query parameter that holds the position (inputToken); paginateHoneybadger in src/pagination.ts copies that parameter from the link into the next request. Source: the published spec, https://docs.honeybadger.io/api/v3/openapi.json.",
+  "patches": [
+    {
+      "op": "add",
+      "path": "/shapes/com.honeybadger.faults#ListFaults/traits/smithy.api#paginated",
+      "value": {
+        "inputToken": "page",
+        "outputToken": "links.next",
+        "items": "data",
+        "pageSize": "per_page"
+      }
+    }
+  ]
+}

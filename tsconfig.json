@@ -103,6 +103,12 @@
       "path": "./packages/hetzner/tsconfig.scripts.json"
     },
     {
+      "path": "./packages/honeybadger/tsconfig.json"
+    },
+    {
+      "path": "./packages/honeybadger/tsconfig.scripts.json"
+    },
+    {
       "path": "./packages/huggingface/tsconfig.json"
     },
     {

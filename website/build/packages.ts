@@ -148,6 +148,7 @@ export const GROUPS: ReadonlyArray<readonly [string, ReadonlyArray<string>]> = [
     [
       "datadog",
       "sentry",
+      "honeybadger",
       "axiom",
       "grafana",
       "chronosphere",
@@ -255,6 +256,7 @@ export const SEARCH_HINTS: Record<string, string> = {
   revenuecat: "in-app purchases subscriptions entitlements",
   datadog: "metrics logs",
   sentry: "errors tracing",
+  honeybadger: "errors logs metrics tracing performance uptime cron analytics",
   axiom: "logs otel",
   grafana: "dashboards",
   posthog: "analytics flags",

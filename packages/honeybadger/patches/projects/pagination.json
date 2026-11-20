@@ -1,0 +1,25 @@
+{
+  "description": "Mark the two projects lists as paginated. The spec documents the `links` these lists return (its `OffsetLinks` schema) but marks no operation as paginated, so each was a single-page call. listProjects (GET /projects) pages by number: `links.next` is the next page (`?page=N&per_page=M`), null on the last page. listAccountOccurrences (GET /projects/occurrences) pages by number: `links.next` is the next page (`?page=N&per_page=M`), null on the last page. The trait names that link (outputToken) and the query parameter that holds the position (inputToken); paginateHoneybadger in src/pagination.ts copies that parameter from the link into the next request. Source: the published spec, https://docs.honeybadger.io/api/v3/openapi.json. Checked live on 2026-11-18: listProjects returned five pages of two, the last with `links.next: null`.",
+  "patches": [
+    {
+      "op": "add",
+      "path": "/shapes/com.honeybadger.projects#ListProjects/traits/smithy.api#paginated",
+      "value": {
+        "inputToken": "page",
+        "outputToken": "links.next",
+        "items": "data",
+        "pageSize": "per_page"
+      }
+    },
+    {
+      "op": "add",
+      "path": "/shapes/com.honeybadger.projects#ListAccountOccurrences/traits/smithy.api#paginated",
+      "value": {
+        "inputToken": "page",
+        "outputToken": "links.next",
+        "items": "data",
+        "pageSize": "per_page"
+      }
+    }
+  ]
+}
